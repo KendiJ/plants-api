@@ -18,6 +18,10 @@ func main() {
     // 2. Setup Routes (Using the handler package)
     http.HandleFunc("/rooms", handlers.GetRooms)
 
+    http.HandleFunc("GET /rooms/{id}", handlers.GetRoomByID)
+    http.HandleFunc("/plants", handlers.GetPlants)
+
+
     // 3. Start Server
     fmt.Println("Server starting on :8080 ...")
     if err := http.ListenAndServe(":8080", nil); err != nil {
