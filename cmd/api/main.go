@@ -16,10 +16,13 @@ func main() {
     defer database.DB.Close()
 
     // 2. Setup Routes (Using the handler package)
-    http.HandleFunc("/rooms", handlers.GetRooms)
-
+    http.HandleFunc("GET /rooms", handlers.GetRooms)
     http.HandleFunc("GET /rooms/{id}", handlers.GetRoomByID)
-    http.HandleFunc("/plants", handlers.GetPlants)
+    http.HandleFunc("GET /rooms/{id}/plants", handlers.GetPlantsByRoom)
+
+    
+    http.HandleFunc("GET /plants", handlers.GetPlants)
+    http.HandleFunc("GET /plants/{id}", handlers.GetPlantByID)
 
 
     // 3. Start Server
