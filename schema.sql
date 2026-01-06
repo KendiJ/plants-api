@@ -17,7 +17,13 @@ CREATE TABLE IF NOT EXISTS plants (
 INSERT IGNORE INTO rooms (id, name) VALUES 
 (1, 'Living Room'),
 (2, 'Bedroom'),
-(3, 'Kitchen');
+(3, 'Kitchen'),
+(4, 'Bathroom'),
+(5, 'Dining Room'),
+(6, 'Family Room'),
+(7, 'Home Office'),
+(8, 'Foyer/Entryway'),
+(9, 'Laundry Room');
 
 INSERT IGNORE INTO plants (name, room_id, water_freq) VALUES 
 ('Monstera', 1, 7),
