@@ -4,4 +4,5 @@ type Plant struct {
 	Name string `json:"name"`
 	RoomID int `json:"room_id"`
 	WaterFreq int `json:"water_frequency"`
+	ImageURL string `json:"image_url"`
 }
