@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 func GetPlants(w http.ResponseWriter, r *http.Request) {
-	rows, err := database.DB.Query("SELECT id, name, room_id, water_freq FROM plants")
+	rows, err := database.DB.Query("SELECT id, name, room_id, water_freq, image_url FROM plants")
 	if err != nil {
 		http.Error(w, "Database Error", http.StatusInternalServerError)
 		return
@@ -21,7 +21,7 @@ func GetPlants(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var p models.Plant
-		if err := rows.Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq, &p.ImageURL); err != nil {
 			http.Error(w, "Error scanning plants", http.StatusInternalServerError)
 			return
 		}
@@ -42,9 +42,9 @@ func GetPlantByID (w http.ResponseWriter, r *http.Request) {
 	}
 
 	var p models.Plant
-	query := "SELECT id, name, room_id, water_freq FROM plants WHERE id = ?"
+	query := "SELECT id, name, room_id, water_freq, image_url FROM plants WHERE id = ?"
 
-	err = database.DB.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq)
+	err = database.DB.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq, &p.ImageURL)
 
 	if err == sql.ErrNoRows {
 		http.Error(w, "Plant not found", http.StatusNotFound)
@@ -67,7 +67,7 @@ func GetPlantsByRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// QUERY: Select plants WHERE the room_id matches
-	query := "SELECT id, name, room_id, water_freq FROM plants WHERE room_id = ?"
+	query := "SELECT id, name, room_id, water_freq, image_url FROM plants WHERE room_id = ?"
 	rows, err := database.DB.Query(query, roomID)
 	if err != nil {
 		http.Error(w, "Database Error", http.StatusInternalServerError)
@@ -79,7 +79,7 @@ func GetPlantsByRoom(w http.ResponseWriter, r *http.Request) {
 	plants := []models.Plant{}
 	for rows.Next() {
 		var p models.Plant
-		if err := rows.Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq, &p.ImageURL); err != nil {
 			continue
 		}
 		plants = append(plants, p)
