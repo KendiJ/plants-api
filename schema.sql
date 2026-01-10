@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS plants (
     FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE SET NULL
 );
 
--- Seed Data (Optional: only adds if tables are empty)
+
 INSERT IGNORE INTO rooms (id, name) VALUES 
 (1, 'Living Room'),
 (2, 'Bedroom'),

@@ -9,9 +9,9 @@ import (
 	"strconv"
 )
 
-// Capital 'G' in GetRooms exports it so main.go can use it
+
 func GetRooms(w http.ResponseWriter, r *http.Request) {
-	// 1. Query all rooms directly
+	
 	rows, err := database.DB.Query("SELECT id, name FROM rooms")
 	if err != nil {
 		http.Error(w, "Database Error", http.StatusInternalServerError)
@@ -19,7 +19,6 @@ func GetRooms(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	// 2. Parse into a list
 	var rooms []models.Room
 	for rows.Next() {
 		var room models.Room
@@ -29,7 +28,7 @@ func GetRooms(w http.ResponseWriter, r *http.Request) {
 		rooms = append(rooms, room)
 	}
 
-	// 3. Return the List
+	
 	w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(rooms)
 }
