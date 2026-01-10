@@ -66,7 +66,7 @@ func GetPlantsByRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// QUERY: Select plants WHERE the room_id matches
+	
 	query := "SELECT id, name, room_id, water_freq, image_url FROM plants WHERE room_id = ?"
 	rows, err := database.DB.Query(query, roomID)
 	if err != nil {
