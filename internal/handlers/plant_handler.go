@@ -88,3 +88,41 @@ func GetPlantsByRoom(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(plants)
 }
+
+func CreatePlant(w http.ResponseWriter, r *http.Request) {
+	// 1. Define the expected structure (What Swift sends us)
+	var p struct {
+		Name string `json:"name"`
+		RoomID string `json:"room_id"`
+		WaterFreq string `json:"water_frequency"`
+		ImageURL string `json:"image_url"`
+	}
+
+	// 2. Decode the JSON body
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+		return
+	}
+
+	//3. Validation (check if name is too short or empty)
+	if len(p.Name) < 2 {
+		http.Error(w, "Plant name is too short", http.StatusBadRequest)
+		return
+	}
+
+	// 4. Insert into Database
+	query := `INSERT INTO plants(name, room_id, water_freq, image_url) VALUES (?, ?, ?, ?)`
+	result, err := database.DB.Exec(query, p.Name, p.RoomID, p.WaterFreq, p.ImageURL)
+	if err != nil {
+		http.Error(w, "Failed to save plant", http.StatusInternalServerError)
+		return
+	}
+
+	// 5. Send back the new ID 
+	id, _ := result.LastInsertId()
+	w.Header().Set("Content type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message": "Plant created successfully",
+		"id": id,
+	})
+}

@@ -23,6 +23,7 @@ func main() {
     
     http.HandleFunc("GET /plants", handlers.GetPlants)
     http.HandleFunc("GET /plants/{id}", handlers.GetPlantByID)
+    http.HandleFunc("POST /plants", handlers.CreatePlant)
 
 
     
