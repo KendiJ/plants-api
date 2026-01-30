@@ -12,7 +12,7 @@ import (
 
 func GetRooms(w http.ResponseWriter, r *http.Request) {
 	
-	rows, err := database.DB.Query("SELECT id, name FROM rooms")
+	rows, err := database.DB.Query("SELECT id, name, image_url FROM rooms")
 	if err != nil {
 		http.Error(w, "Database Error", http.StatusInternalServerError)
 		return
@@ -22,7 +22,7 @@ func GetRooms(w http.ResponseWriter, r *http.Request) {
 	var rooms []models.Room
 	for rows.Next() {
 		var room models.Room
-		if err := rows.Scan(&room.ID, &room.Name); err != nil {
+		if err := rows.Scan(&room.ID, &room.Name, &room.ImageURL); err != nil {
 			continue
 		}
 		rooms = append(rooms, room)
