@@ -24,14 +24,14 @@ CREATE TABLE plants (
 -- INSERT ROOMS 
 INSERT INTO rooms (id, name, image_url) VALUES 
 (1, 'Living Room', 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=800&q=80'),
-(2, 'Bedroom', 'https://images.unsplash.com/photo-1616594039964-40891a90b3b9?auto=format&fit=crop&w=800&q=80'),
-(3, 'Kitchen', 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80'),
-(4, 'Bathroom', 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=800&q=80'),
-(5, 'Dining Room', 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800&q=80'),
-(6, 'Family Room', 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=800&q=80'),
-(7, 'Home Office', 'https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=800&q=80'),
-(8, 'Foyer/Entryway', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80'),
-(9, 'Laundry Room', 'https://images.unsplash.com/photo-1517677208171-0bc5e2e3b6bd?auto=format&fit=crop&w=800&q=80');
+(2, 'Bedroom', 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+(3, 'Kitchen', 'https://images.unsplash.com/photo-1721742146260-dd19d80e1d52?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+(4, 'Bathroom', 'https://plus.unsplash.com/premium_photo-1661884424253-08db7c7758ce?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+(5, 'Dining Room', 'https://plus.unsplash.com/premium_photo-1674815329400-f17578e2b03b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+(6, 'Family Room', 'https://plus.unsplash.com/premium_photo-1736194028567-54d9c9f3cc56?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+(7, 'Home Office', 'https://images.unsplash.com/photo-1641178796760-a35e54c27aed?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+(8, 'Foyer/Entryway', 'https://images.unsplash.com/photo-1560185127-59e4420e2c93?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+(9, 'Laundry Room', 'https://images.unsplash.com/photo-1655041448985-f6666cba2d6c?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
 
 -- INSERT PLANTS 
 INSERT INTO plants (name, room_id, water_freq, image_url) VALUES 
