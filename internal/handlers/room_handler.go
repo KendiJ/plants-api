@@ -44,7 +44,7 @@ func GetRoomByID(w http.ResponseWriter, r *http.Request) {
 	var room models.Room
 	query := "SELECT id, name FROM rooms WHERE id = ?"
 
-	err = database.DB.QueryRow(query, id).Scan(&room.ID, &room.Name)
+	err = database.NewDatabase.QueryRow(query, id).Scan(&room.ID, &room.Name)
 
 	if err == sql.ErrNoRows {
 		http.Error(w, "Room not found", http.StatusNotFound)
