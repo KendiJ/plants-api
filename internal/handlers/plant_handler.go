@@ -1,128 +1,66 @@
 package handlers
 
 import (
-	"database/sql"
-	"encoding/json"
-	"homeplants-api/internal/database"
-	"homeplants-api/internal/models"
-	"net/http"
-	"strconv"
+    "database/sql"
+    "encoding/json"
+    "net/http"
+    "homeplants-api/internal/models"
 )
-func GetPlants(w http.ResponseWriter, r *http.Request) {
-	rows, err := database.DB.Query("SELECT id, name, room_id, water_freq, image_url FROM plants")
-	if err != nil {
-		http.Error(w, "Database Error", http.StatusInternalServerError)
-		return
-	}
-	defer rows.Close()
 
-	// emply slise for now
-	plants := []models.Plant{}
-
-	for rows.Next() {
-		var p models.Plant
-		if err := rows.Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq, &p.ImageURL); err != nil {
-			http.Error(w, "Error scanning plants", http.StatusInternalServerError)
-			return
-		}
-		plants = append(plants, p)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(plants)
+// PlantHandler holds the dependencies. 
+// No more global 'database.DB'! We inject it.
+type PlantHandler struct {
+    DB *sql.DB
 }
 
-func GetPlantByID (w http.ResponseWriter, r *http.Request) {
-	idStr := r.PathValue("id")
-
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
-		return
-	}
-
-	var p models.Plant
-	query := "SELECT id, name, room_id, water_freq, image_url FROM plants WHERE id = ?"
-
-	err = database.DB.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq, &p.ImageURL)
-
-	if err == sql.ErrNoRows {
-		http.Error(w, "Plant not found", http.StatusNotFound)
-		return
-	} else if err != nil {
-		http.Error(w, "Database erro", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(p)
+func NewPlantHandler(db *sql.DB) *PlantHandler {
+    return &PlantHandler{DB: db}
 }
 
-func GetPlantsByRoom(w http.ResponseWriter, r *http.Request) {
-	roomIDStr := r.PathValue("id")
-	roomID, err := strconv.Atoi(roomIDStr)
-	if err != nil {
-		http.Error(w, "Invalid Room ID", http.StatusBadRequest)
-		return
-	}
-
-	
-	query := "SELECT id, name, room_id, water_freq, image_url FROM plants WHERE room_id = ?"
-	rows, err := database.DB.Query(query, roomID)
-	if err != nil {
-		http.Error(w, "Database Error", http.StatusInternalServerError)
-		return
-	}
-
-	defer rows.Close()
-
-	plants := []models.Plant{}
-	for rows.Next() {
-		var p models.Plant
-		if err := rows.Scan(&p.ID, &p.Name, &p.RoomID, &p.WaterFreq, &p.ImageURL); err != nil {
-			continue
-		}
-		plants = append(plants, p)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(plants)
+// Define the response structure as requested
+type CreatePlantResponse struct {
+    Message string `json:"message"`
+    ID      int64  `json:"id"`
 }
 
-func CreatePlant(w http.ResponseWriter, r *http.Request) {
-	// 1. Define the expected structure (What Swift sends us)
-	var p struct {
-		Name string `json:"name"`
-		RoomID string `json:"room_id"`
-		WaterFreq string `json:"water_frequency"`
-		ImageURL string `json:"image_url"`
-	}
+func (h *PlantHandler) CreatePlant(w http.ResponseWriter, r *http.Request) {
+    var p models.Plant
+    
+    // Check for decoding errors
+    if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+        http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+        return
+    }
 
-	// 2. Decode the JSON body
-	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
-		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
-		return
-	}
+    // Use Context for timeout (Addressing feedback)
+    ctx := r.Context()
 
-	//3. Validation (check if name is too short or empty)
-	if len(p.Name) < 2 {
-		http.Error(w, "Plant name is too short", http.StatusBadRequest)
-		return
-	}
+    query := `INSERT INTO plants (name, room_id, water_freq, image_url) VALUES (?, ?, ?, ?)`
+    
+    // Use h.DB (the injected database), not a global variable
+    result, err := h.DB.ExecContext(ctx, query, p.Name, p.RoomID, p.WaterFreq, p.ImageURL)
+    if err != nil {
+        // Log the actual error internally, show generic to user
+        // logger.Error("failed to insert plant", "error", err) 
+        http.Error(w, "Failed to create plant", http.StatusInternalServerError)
+        return
+    }
 
-	// 4. Insert into Database
-	query := `INSERT INTO plants(name, room_id, water_freq, image_url) VALUES (?, ?, ?, ?)`
-	result, err := database.DB.Exec(query, p.Name, p.RoomID, p.WaterFreq, p.ImageURL)
-	if err != nil {
-		http.Error(w, "Failed to save plant", http.StatusInternalServerError)
-		return
-	}
+    id, err := result.LastInsertId()
+    if err != nil {
+        http.Error(w, "Failed to get new plant ID", http.StatusInternalServerError)
+        return
+    }
 
-	// 5. Send back the new ID 
-	id, _ := result.LastInsertId()
-	w.Header().Set("Content type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"message": "Plant created successfully",
-		"id": id,
-	})
+    response := CreatePlantResponse{
+        Message: "Plant created successfully",
+        ID:      id,
+    }
+
+    w.Header().Set("Content-Type", "application/json") // Fixed typo
+    w.WriteHeader(http.StatusCreated)                  // Explicit status
+    
+    if err := json.NewEncoder(w).Encode(response); err != nil {
+        http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+    }
 }
