@@ -22,12 +22,12 @@ func main() {
     
     cfg, err := config.LoadConfig()
     if err != nil {
-        log.Fatal("Failed to loag config: %v", err)
+        log.Fatalf("Failed to loag config: %v", err)
     }
 
     db, err := database.NewDatabase(cfg)
     if err != nil {
-        log.Fatal("Failed to connect to Database: %v", err)
+        log.Fatalf("Failed to connect to Database: %v", err)
     }
     defer db.Close()
 
