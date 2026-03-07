@@ -2,3 +2,4 @@
 .DS_Store
 bin/
 vendor/
+docker-compose.yml
